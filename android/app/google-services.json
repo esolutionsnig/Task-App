@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "832209649129",
+    "firebase_url": "https://tasks-etech.firebaseio.com",
+    "project_id": "tasks-etech",
+    "storage_bucket": "tasks-etech.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:832209649129:android:f6c95631bf5762e7249f78",
+        "android_client_info": {
+          "package_name": "com.example.tasks"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "832209649129-2kia1einr99um3611iofma11r5flcp7o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tasks",
+            "certificate_hash": "956ceef2c6ab1552b073b44f2c1ba0e5305aa3ef"
+          }
+        },
+        {
+          "client_id": "832209649129-g1vl777co9qsjb3k1ccthahellp4uqd1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlyIMDxAC9aC-AQk1an5M4ZUDtMZpNbno"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "832209649129-g1vl777co9qsjb3k1ccthahellp4uqd1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
