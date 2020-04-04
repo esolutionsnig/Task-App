@@ -1,20 +1,44 @@
 import 'package:flutter/material.dart';
-import 'package:tasks/screens/authenticate/sign_up.dart';
+import 'package:tasks/screens/authenticate/sign_in.dart';
 import 'package:tasks/services/auth.dart';
 import 'package:tasks/shared/color.dart';
 import 'package:tasks/widget/bezierContainer.dart';
 
-class SignIn extends StatefulWidget {
+class SignUp extends StatefulWidget {
   @override
-  _SignInState createState() => _SignInState();
+  _SignUpState createState() => _SignUpState();
 }
 
-class _SignInState extends State<SignIn> {
+class _SignUpState extends State<SignUp> {
   final AuthService _authService = AuthService();
 
   double pageHorizontalPadding = 50.0;
   double pageVerticalPadding = 10.0;
   double sizeBox = 10.0;
+
+  // Back Button
+  Widget _backButton() {
+    return InkWell(
+      onTap: () {
+        Navigator.pop(context);
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        child: Row(
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.only(left: 0, top: 10, bottom: 10),
+              child: Icon(Icons.keyboard_arrow_left, color: Colors.black),
+            ),
+            Text(
+              'Back',
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+            )
+          ],
+        ),
+      ),
+    );
+  }
 
   // form entry field
   Widget _entryField(String title, {bool isPassword = false}) {
@@ -109,63 +133,6 @@ class _SignInState extends State<SignIn> {
     );
   }
 
-  // Facebook Button
-  Widget _googleButton() {
-    return Container(
-      height: 45,
-      margin: EdgeInsets.symmetric(vertical: 12),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-      ),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            flex: 1,
-            child: Container(
-              decoration: BoxDecoration(
-                color: cRed,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(5),
-                  topLeft: Radius.circular(5),
-                ),
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                'G',
-                style: TextStyle(
-                  color: cWhite,
-                  fontSize: 25,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 5,
-            child: Container(
-              decoration: BoxDecoration(
-                color: cFormFillColor,
-                borderRadius: BorderRadius.only(
-                  bottomRight: Radius.circular(5),
-                  topRight: Radius.circular(5),
-                ),
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                "Log In With Google".toUpperCase(),
-                style: TextStyle(
-                  color: cRed,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   // Create Account Label
   Widget _createAccountLabel() {
     return Container(
@@ -175,7 +142,7 @@ class _SignInState extends State<SignIn> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
-            "Don't have an account yet?",
+            "Already have an account?",
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
@@ -189,12 +156,12 @@ class _SignInState extends State<SignIn> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SignUp(),
+                  builder: (context) => SignIn(),
                 ),
               );
             },
             child: Text(
-              "Sign Up".toUpperCase(),
+              "Sign In".toUpperCase(),
               style: TextStyle(
                 color: Theme.of(context).primaryColor,
                 fontWeight: FontWeight.w600,
@@ -264,8 +231,6 @@ class _SignInState extends State<SignIn> {
                       height: 12,
                     ),
                     _submitButton(),
-                    _divider(),
-                    _googleButton(),
                     Expanded(
                       flex: 2,
                       child: SizedBox(),
@@ -276,6 +241,11 @@ class _SignInState extends State<SignIn> {
               Align(
                 alignment: Alignment.bottomCenter,
                 child: _createAccountLabel(),
+              ),
+              Positioned(
+                top: 40,
+                left: 0,
+                child: _backButton(),
               ),
               Positioned(
                 top: -MediaQuery.of(context).size.height * .15,
