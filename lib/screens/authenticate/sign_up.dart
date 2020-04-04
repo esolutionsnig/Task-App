@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:tasks/screens/authenticate/sign_in.dart';
 import 'package:tasks/services/auth.dart';
 import 'package:tasks/shared/color.dart';
+import 'package:tasks/shared/general.dart';
+import 'package:tasks/shared/loading.dart';
 import 'package:tasks/widget/bezierContainer.dart';
 
 class SignUp extends StatefulWidget {
@@ -11,9 +13,13 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   final AuthService _authService = AuthService();
+  final _formKey = GlobalKey<FormState>();
 
   String email = '';
   String password = '';
+  String error = '';
+  bool loading = false;
+  bool hasError = false;
 
   double pageHorizontalPadding = 50.0;
   double pageVerticalPadding = 10.0;
@@ -54,12 +60,31 @@ class _SignUpState extends State<SignUp> {
         ),
         color: Theme.of(context).primaryColor,
         textColor: cWhite,
-        onPressed: () {
-          print(email);
-          print(password);
+        onPressed: () async {
+          if (_formKey.currentState.validate()) {
+            setState(() {
+              loading = true;
+            });
+            dynamic result = await _authService.registerWithEmailAndPassword(
+                email, password);
+            if (result == null) {
+              setState(() {
+                loading = false;
+                hasError = true;
+                error = 'Please enter a valid credential';
+              });
+            } else {
+              setState(() {
+                loading = false;
+                hasError = false;
+                error = "";
+                Navigator.pop(context);
+              });
+            }
+          }
         },
         child: Text(
-          "Sign In".toUpperCase(),
+          "Sign Up".toUpperCase(),
           style: TextStyle(
             fontSize: 20.0,
             fontWeight: FontWeight.w600,
@@ -140,7 +165,7 @@ class _SignUpState extends State<SignUp> {
             children: <Widget>[
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 15),
-                child: Column(
+                child: loading ? Loading() : Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -153,6 +178,7 @@ class _SignUpState extends State<SignUp> {
                       height: 35,
                     ),
                     Form(
+                      key: _formKey,
                       child: Column(
                         children: <Widget>[
                           Container(
@@ -171,16 +197,16 @@ class _SignUpState extends State<SignUp> {
                                   height: 8,
                                 ),
                                 TextFormField(
+                                  keyboardType: TextInputType.emailAddress,
+                                  validator: (val) => val.isEmpty
+                                      ? "Enter a valid email address"
+                                      : null,
                                   onChanged: (val) {
                                     setState(() {
                                       email = val;
                                     });
                                   },
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    fillColor: cFormFillColor,
-                                    filled: true,
-                                  ),
+                                  decoration: textInputDecoration.copyWith(hintText: "Email Address"),
                                 ),
                               ],
                             ),
@@ -202,16 +228,15 @@ class _SignUpState extends State<SignUp> {
                                 ),
                                 TextFormField(
                                   obscureText: true,
+                                  validator: (val) => val.length < 8
+                                      ? "Password must be minimum of 8  characters"
+                                      : null,
                                   onChanged: (val) {
                                     setState(() {
                                       password = val;
                                     });
                                   },
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    fillColor: cFormFillColor,
-                                    filled: true,
-                                  ),
+                                  decoration: textInputDecoration.copyWith(hintText: "Password"),
                                 ),
                               ],
                             ),
@@ -220,6 +245,23 @@ class _SignUpState extends State<SignUp> {
                             height: 12,
                           ),
                           _submitButton(),
+                          hasError
+                              ? Padding(
+                                  padding: const EdgeInsets.only(
+                                    top: 12,
+                                    bottom: 12,
+                                  ),
+                                  child: Text(
+                                    error,
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 14.0,
+                                    ),
+                                  ),
+                                )
+                              : SizedBox(
+                                  height: 0.1,
+                                ),
                         ],
                       ),
                     ),
