@@ -12,64 +12,34 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   final AuthService _authService = AuthService();
 
+  String email = '';
+  String password = '';
+
   double pageHorizontalPadding = 50.0;
   double pageVerticalPadding = 10.0;
   double sizeBox = 10.0;
 
-  // form entry field
-  Widget _entryField(String title, {bool isPassword = false}) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: pageVerticalPadding),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            title,
-            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
-          ),
-          SizedBox(
-            height: 8,
-          ),
-          TextField(
-            obscureText: isPassword,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              fillColor: cFormFillColor,
-              filled: true,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   // Submit button
   Widget _submitButton() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.symmetric(vertical: pageVerticalPadding),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(5)),
-        boxShadow: <BoxShadow>[
-          BoxShadow(
-            color: Colors.grey.shade200,
-            offset: Offset(2, 4),
-            blurRadius: 5,
-            spreadRadius: 2,
-          ),
-        ],
-        gradient: LinearGradient(
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-          colors: [cLiteRed, cDarkRed],
+    return SizedBox(
+      width: double.infinity,
+      height: 50,
+      child: RaisedButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
         ),
-      ),
-      child: Text(
-        'Sign In'.toUpperCase(),
-        style: TextStyle(
-          fontSize: 20,
-          color: cWhite,
+        color: Theme.of(context).primaryColor,
+        textColor: cWhite,
+        onPressed: () {
+          print(email);
+          print(password);
+        },
+        child: Text(
+          "Sign In".toUpperCase(),
+          style: TextStyle(
+            fontSize: 20.0,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );
@@ -211,11 +181,11 @@ class _SignInState extends State<SignIn> {
     return Stack(
       children: <Widget>[
         Text(
-          "tasks",
-          style: TextStyle(fontSize: 50, color: Theme.of(context).primaryColor),
+          "task",
+          style: TextStyle(fontSize: 61, color: Theme.of(context).primaryColor),
         ),
         Container(
-          margin: EdgeInsets.only(top: 55),
+          margin: EdgeInsets.only(top: 62),
           child: Text(
             "plan your day",
             style: TextStyle(
@@ -223,16 +193,6 @@ class _SignInState extends State<SignIn> {
             ),
           ),
         ),
-      ],
-    );
-  }
-
-  // Email Password
-  Widget _emailPasswordWidget() {
-    return Column(
-      children: <Widget>[
-        _entryField("Email Address"),
-        _entryField("Password", isPassword: true),
       ],
     );
   }
@@ -259,11 +219,77 @@ class _SignInState extends State<SignIn> {
                     SizedBox(
                       height: 35,
                     ),
-                    _emailPasswordWidget(),
-                    SizedBox(
-                      height: 12,
+                    Form(
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            margin: EdgeInsets.symmetric(
+                                vertical: pageVerticalPadding),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  "Email Address",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 15),
+                                ),
+                                SizedBox(
+                                  height: 8,
+                                ),
+                                TextFormField(
+                                  onChanged: (val) {
+                                    setState(() {
+                                      email = val;
+                                    });
+                                  },
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    fillColor: cFormFillColor,
+                                    filled: true,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.symmetric(
+                                vertical: pageVerticalPadding),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  "Password",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 15),
+                                ),
+                                SizedBox(
+                                  height: 8,
+                                ),
+                                TextFormField(
+                                  obscureText: true,
+                                  onChanged: (val) {
+                                    setState(() {
+                                      password = val;
+                                    });
+                                  },
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    fillColor: cFormFillColor,
+                                    filled: true,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 12,
+                          ),
+                          _submitButton(),
+                        ],
+                      ),
                     ),
-                    _submitButton(),
                     _divider(),
                     _googleButton(),
                     Expanded(
