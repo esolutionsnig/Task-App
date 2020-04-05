@@ -30,8 +30,11 @@ dependencies:
   # For example, to use Firebase Authentication and Cloud Firestore
   firebase_auth: ^0.14.0+5
   cloud_firestore: ^0.12.9+5
+  google_sign_in: ^4.4.0
   provider:
   flutter_spinkit:
+  line_awesome_icons: ^1.0.4+2
+  flutter_rating_bar: ^3.0.1+1
 
 
 dev_dependencies:

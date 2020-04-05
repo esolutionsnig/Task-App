@@ -6,6 +6,9 @@ class AuthService {
 
   // Create user object based on firebase user
   User _userFromFirebaseUser(FirebaseUser user) {
+
+    // user: {uid: uw5rjKBPQ1dt5f39SxqK2wDRaG52, isAnonymous: false, providerData: [{uid: uw5rjKBPQ1dt5f39SxqK2wDRaG52, providerId: firebase, email: ibeh@yahoo.com}, {uid: ibeh@yahoo.com, providerId: password, email: ibeh@yahoo.com}], providerId: firebase, creationTimestamp: 1586034383728, lastSignInTimestamp: 1586073883516, email: ibeh@yahoo.com, isEmailVerified: false}}
+
     return user != null ? User(uid: user.uid) : null;
   }
 

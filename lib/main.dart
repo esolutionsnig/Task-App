@@ -13,20 +13,20 @@ final ThemeData _tasksTheme = _buildTasksTheme();
 ThemeData _buildTasksTheme() {
   final ThemeData base = ThemeData.light();
   return base.copyWith(
-    accentColor: cLiteRed,
-    primaryColor: cDarkRed,
-    buttonColor: cDarkRed,
+    accentColor: cDarkPink3,
+    primaryColor: cDarkPink4,
+    buttonColor: cDarkPink4,
     scaffoldBackgroundColor: cScaffold,
     cardColor: cWhite,
     canvasColor: Colors.transparent,
     textSelectionColor: cGrey,
-    errorColor: cLiteRed,
+    errorColor: cDarkPink3,
     buttonTheme: ButtonThemeData(
       textTheme: ButtonTextTheme.accent,
     ),
-    primaryIconTheme: base.iconTheme.copyWith(color: cDarkRed),
+    primaryIconTheme: base.iconTheme.copyWith(color: cDarkPink4),
     textTheme: _buildTextTheme(base.textTheme),
-    primaryTextTheme: TextTheme(title: TextStyle(color: cDarkRed)),
+    primaryTextTheme: TextTheme(title: TextStyle(color: cDarkPink4)),
     accentTextTheme: _buildTextTheme(base.accentTextTheme),
   );
 }

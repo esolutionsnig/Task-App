@@ -16,3 +16,7 @@ const cText = Color(0xFF363636);
 const cScaffold = Color(0xFFFFFFFF);
 const cFormFillColor = Color(0xFFF3F3F4);
 const cRed = Color(0xFFAF0000);
+const cDarkPink4 = Color(0xFF880E4F);
+const cDarkPink3 = Color(0xFFAD1457);
+const cDarkPink2 = Color(0xFFC2185B);
+const cDarkPink1 = Color(0xFFD81B60);

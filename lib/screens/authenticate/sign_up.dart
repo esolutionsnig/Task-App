@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tasks/screens/authenticate/sign_in.dart';
 import 'package:tasks/services/auth.dart';
 import 'package:tasks/shared/color.dart';
 import 'package:tasks/shared/general.dart';
@@ -55,11 +54,6 @@ class _SignUpState extends State<SignUp> {
       width: double.infinity,
       height: 50,
       child: RaisedButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        color: Theme.of(context).primaryColor,
-        textColor: cWhite,
         onPressed: () async {
           if (_formKey.currentState.validate()) {
             setState(() {
@@ -73,21 +67,31 @@ class _SignUpState extends State<SignUp> {
                 hasError = true;
                 error = 'Please enter a valid credential';
               });
-            } else {
-              setState(() {
-                loading = false;
-                hasError = false;
-                error = "";
-                Navigator.pop(context);
-              });
             }
           }
         },
-        child: Text(
-          "Sign Up".toUpperCase(),
-          style: TextStyle(
-            fontSize: 20.0,
-            fontWeight: FontWeight.w600,
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
+        padding: EdgeInsets.all(0.0),
+        child: Ink(
+          decoration: BoxDecoration(
+            gradient: pinkGradient,
+            borderRadius: BorderRadius.all(Radius.circular(80.0)),
+          ),
+          child: Container(
+            constraints: BoxConstraints(
+              minWidth: 88.0,
+              minHeight: 36.0,
+            ), // min sizes for Material buttons
+            alignment: Alignment.center,
+            child: Text(
+              'Create Account'.toUpperCase(),
+              style: TextStyle(
+                fontWeight: FontWeight.w300,
+                fontSize: 20,
+                color: Colors.white,
+              ),
+            ),
           ),
         ),
       ),
@@ -114,12 +118,7 @@ class _SignUpState extends State<SignUp> {
           ),
           InkWell(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SignIn(),
-                ),
-              );
+              Navigator.pop(context);
             },
             child: Text(
               "Sign In".toUpperCase(),
@@ -146,9 +145,7 @@ class _SignUpState extends State<SignUp> {
           margin: EdgeInsets.only(top: 62),
           child: Text(
             "plan your day",
-            style: TextStyle(
-              fontSize: 18,
-            ),
+            style: TextStyle(fontSize: 18, color: cDarkPink3),
           ),
         ),
       ],
@@ -165,112 +162,119 @@ class _SignUpState extends State<SignUp> {
             children: <Widget>[
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 15),
-                child: loading ? Loading() : Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Expanded(
-                      flex: 4,
-                      child: SizedBox(),
-                    ),
-                    _title(),
-                    SizedBox(
-                      height: 35,
-                    ),
-                    Form(
-                      key: _formKey,
-                      child: Column(
+                child: loading
+                    ? Loading()
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Container(
-                            margin: EdgeInsets.symmetric(
-                                vertical: pageVerticalPadding),
+                          Expanded(
+                            flex: 4,
+                            child: SizedBox(),
+                          ),
+                          header("assets/appicon.png"),
+                          inforTitle(
+                              "Sign up using your email & password"),
+                          Form(
+                            key: _formKey,
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Text(
-                                  "Email Address",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 15),
+                                Container(
+                                  margin: EdgeInsets.symmetric(
+                                      vertical: pageVerticalPadding),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text(
+                                        "Email Address",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 15),
+                                      ),
+                                      SizedBox(
+                                        height: 8,
+                                      ),
+                                      TextFormField(
+                                        keyboardType:
+                                            TextInputType.emailAddress,
+                                        validator: (val) => val.isEmpty
+                                            ? "Enter a valid email address"
+                                            : null,
+                                        onChanged: (val) {
+                                          setState(() {
+                                            email = val;
+                                          });
+                                        },
+                                        decoration:
+                                            textInputDecoration.copyWith(
+                                                hintText: "Email Address"),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.symmetric(
+                                      vertical: pageVerticalPadding),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text(
+                                        "Password",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 15),
+                                      ),
+                                      SizedBox(
+                                        height: 8,
+                                      ),
+                                      TextFormField(
+                                        obscureText: true,
+                                        validator: (val) => val.length < 8
+                                            ? "Password must be minimum of 8  characters"
+                                            : null,
+                                        onChanged: (val) {
+                                          setState(() {
+                                            password = val;
+                                          });
+                                        },
+                                        decoration: textInputDecoration
+                                            .copyWith(hintText: "Password"),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                                 SizedBox(
-                                  height: 8,
+                                  height: 12,
                                 ),
-                                TextFormField(
-                                  keyboardType: TextInputType.emailAddress,
-                                  validator: (val) => val.isEmpty
-                                      ? "Enter a valid email address"
-                                      : null,
-                                  onChanged: (val) {
-                                    setState(() {
-                                      email = val;
-                                    });
-                                  },
-                                  decoration: textInputDecoration.copyWith(hintText: "Email Address"),
-                                ),
+                                _submitButton(),
+                                hasError
+                                    ? Padding(
+                                        padding: const EdgeInsets.only(
+                                          top: 12,
+                                          bottom: 12,
+                                        ),
+                                        child: Text(
+                                          error,
+                                          style: TextStyle(
+                                            color: Colors.red,
+                                            fontSize: 14.0,
+                                          ),
+                                        ),
+                                      )
+                                    : SizedBox(
+                                        height: 0.1,
+                                      ),
                               ],
                             ),
                           ),
-                          Container(
-                            margin: EdgeInsets.symmetric(
-                                vertical: pageVerticalPadding),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  "Password",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 15),
-                                ),
-                                SizedBox(
-                                  height: 8,
-                                ),
-                                TextFormField(
-                                  obscureText: true,
-                                  validator: (val) => val.length < 8
-                                      ? "Password must be minimum of 8  characters"
-                                      : null,
-                                  onChanged: (val) {
-                                    setState(() {
-                                      password = val;
-                                    });
-                                  },
-                                  decoration: textInputDecoration.copyWith(hintText: "Password"),
-                                ),
-                              ],
-                            ),
+                          Expanded(
+                            flex: 2,
+                            child: SizedBox(),
                           ),
-                          SizedBox(
-                            height: 12,
-                          ),
-                          _submitButton(),
-                          hasError
-                              ? Padding(
-                                  padding: const EdgeInsets.only(
-                                    top: 12,
-                                    bottom: 12,
-                                  ),
-                                  child: Text(
-                                    error,
-                                    style: TextStyle(
-                                      color: Colors.red,
-                                      fontSize: 14.0,
-                                    ),
-                                  ),
-                                )
-                              : SizedBox(
-                                  height: 0.1,
-                                ),
                         ],
                       ),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: SizedBox(),
-                    ),
-                  ],
-                ),
               ),
               Align(
                 alignment: Alignment.bottomCenter,
