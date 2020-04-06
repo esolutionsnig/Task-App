@@ -35,6 +35,7 @@ dependencies:
   flutter_spinkit:
   line_awesome_icons: ^1.0.4+2
   flutter_rating_bar: ^3.0.1+1
+  shimmer:
 
 
 dev_dependencies:

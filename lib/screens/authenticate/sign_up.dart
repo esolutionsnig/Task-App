@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tasks/services/auth.dart';
-import 'package:tasks/shared/color.dart';
 import 'package:tasks/shared/general.dart';
 import 'package:tasks/shared/loading.dart';
 import 'package:tasks/widget/bezierContainer.dart';
@@ -67,6 +66,8 @@ class _SignUpState extends State<SignUp> {
                 hasError = true;
                 error = 'Please enter a valid credential';
               });
+            } else {
+              Navigator.pop(context);
             }
           }
         },
@@ -133,25 +134,6 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  // Title
-  Widget _title() {
-    return Stack(
-      children: <Widget>[
-        Text(
-          "task",
-          style: TextStyle(fontSize: 61, color: Theme.of(context).primaryColor),
-        ),
-        Container(
-          margin: EdgeInsets.only(top: 62),
-          child: Text(
-            "plan your day",
-            style: TextStyle(fontSize: 18, color: cDarkPink3),
-          ),
-        ),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -173,8 +155,7 @@ class _SignUpState extends State<SignUp> {
                             child: SizedBox(),
                           ),
                           header("assets/appicon.png"),
-                          inforTitle(
-                              "Sign up using your email & password"),
+                          inforTitle("Sign up using your email & password"),
                           Form(
                             key: _formKey,
                             child: Column(

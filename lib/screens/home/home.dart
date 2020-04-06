@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
+import 'package:provider/provider.dart';
+import 'package:tasks/models/profile.dart';
+import 'package:tasks/screens/home/profile_form.dart';
 import 'package:tasks/services/auth.dart';
+import 'package:tasks/services/database.dart';
 import 'package:tasks/shared/color.dart';
 import 'package:tasks/shared/general.dart';
+import 'package:tasks/screens/home/profile_info.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -12,94 +17,120 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> with TickerProviderStateMixin {
   final AuthService _auth = AuthService();
 
+  // List<String> items = ["Item 1 - I will stick to the new position!", "Item 2 - I will stick to the new position!", "Item 3 - I will stick to the new position!"];
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(
-        elevation: 0.0,
-        centerTitle: false,
-        title: homeTitle(),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              stops: [0.0, 0.5, 1.0],
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-              colors: <Color>[cDarkPink4, cDarkPink2, cDarkPink1],
-            ),
-          ),
-        ),
-        actions: <Widget>[
-          // action button
-          IconButton(
-            icon: Icon(
-              Icons.person_outline,
-              color: cWhite,
-              size: 30,
-            ),
-            onPressed: () {
-              print("object 1");
-            },
-          ),
-          // action button
-          IconButton(
-            icon: Icon(
-              Icons.power_settings_new,
-              color: cWhite,
-              size: 30,
-            ),
-            onPressed: () async {
-              await _auth.signOut();
-            },
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Stack(
-              alignment: AlignmentDirectional.topCenter,
-              overflow: Overflow.visible,
-              children: <Widget>[
-                _backBgCover(),
-                _header(),
-                _currentTaskHolder(),
-              ],
-            ),
-            SizedBox(
-              height: 50.0,
-            ),
-            SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Padding(
-                padding: EdgeInsets.all(20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    _nextAppointmentText(),
-                    _taskCard(),
-                    _areaSpecialistsText(),
-                    _specialistsCardInfo(),
-                    _specialistsCardInfo(),
-                    _specialistsCardInfo(),
-                    _specialistsCardInfo(),
-                  ],
-                ),
+    return StreamProvider<List<Profile>>.value(
+      value: DatabaseService().profiles,
+      child: Scaffold(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        appBar: AppBar(
+          elevation: 0.0,
+          centerTitle: false,
+          title: homeTitle(),
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                stops: [0.0, 0.5, 1.0],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: <Color>[cDarkPink4, cDarkPink2, cDarkPink1],
               ),
+            ),
+          ),
+          actions: <Widget>[
+            // action button
+            IconButton(
+              icon: Icon(
+                Icons.person_outline,
+                color: cWhite,
+                size: 30,
+              ),
+              onPressed: () {
+                _showProfileForm(context);
+              },
+            ),
+            // action button
+            IconButton(
+              icon: Icon(
+                Icons.power_settings_new,
+                color: cWhite,
+                size: 30,
+              ),
+              onPressed: () async {
+                await _auth.signOut();
+              },
             ),
           ],
         ),
+        body: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Stack(
+                alignment: AlignmentDirectional.topCenter,
+                overflow: Overflow.visible,
+                children: <Widget>[
+                  _backBgCover(),
+                  _header(),
+                  _currentTaskHolder(),
+                ],
+              ),
+              SizedBox(
+                height: 50.0,
+              ),
+              SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      _nextAppointmentText(),
+                      _taskCard(),
+                      _areaSpecialistsText(),
+                      _specialistsCardInfo(),
+                      _specialistsCardInfo(),
+                      _specialistsCardInfo(),
+                      _specialistsCardInfo(),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: cDarkPink3,
+          child: Icon(Icons.add),
+          onPressed: () {
+            print(0);
+          },
+        ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: cDarkPink3,
-        child: Icon(Icons.add),
-        onPressed: () {
-          print(0);
-        },
-      ),
+    );
+  }
+
+  // Bottom Sheet
+  _showProfileForm(context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return Container(
+          height: 600.0,
+          decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(30),
+              topRight: Radius.circular(30),
+            ),
+          ),
+          child: ProfileForm(),
+        );
+      },
     );
   }
 
@@ -142,59 +173,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     return Positioned(
       left: 20,
       bottom: 75,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Container(
-                child: CircleAvatar(
-                  child: CircleAvatar(
-                    backgroundColor: cWhite,
-                    backgroundImage: NetworkImage(USER_IMAGE),
-                    radius: 55.0,
-                  ),
-                  foregroundColor: cWhite,
-                  backgroundColor: cDarkPink3,
-                ),
-                width: 60.0,
-                height: 60.0,
-                padding: EdgeInsets.all(2.0), // borde width
-                decoration: BoxDecoration(
-                  color: cDarkPink1, // border color
-                  shape: BoxShape.circle,
-                ),
-              ),
-              SizedBox(
-                width: 15,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    'Hi Ernest',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Text(
-                    "Here are you tasks",
-                    style: TextStyle(
-                      color: cWhite,
-                      fontSize: 18,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
-      ),
+      child: ProfileInfo(),
     );
   }
 
