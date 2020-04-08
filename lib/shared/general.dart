@@ -106,6 +106,13 @@ const pinkGradient = LinearGradient(
   end: Alignment.centerRight,
 );
 
+const whiteGradient = LinearGradient(
+  colors: <Color>[cWhite3, cWhite2, cWhite1],
+  stops: [0.0, 0.5, 1.0],
+  begin: Alignment.centerLeft,
+  end: Alignment.centerRight,
+);
+
 const redGradient = LinearGradient(
   colors: <Color>[cDarkRed, cLiteRed],
   stops: [0.0, 1.0],

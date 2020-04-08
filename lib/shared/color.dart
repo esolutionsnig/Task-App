@@ -24,3 +24,6 @@ const cYellow = Color(0XFFF57F17);
 const cHigh = Color(0XFFB71C1C);
 const cMedium = Color(0XFFF06292);
 const cLow = Color(0XFFE1BEE7);
+const cWhite1 = Color(0xFFFFFFFF);
+const cWhite2 = Color(0xFFF5F5F5);
+const cWhite3 = Color(0xFFEEEEEE);

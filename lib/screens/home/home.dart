@@ -6,6 +6,7 @@ import 'package:tasks/models/task.dart';
 import 'package:tasks/screens/home/profile_form.dart';
 import 'package:tasks/screens/task/task_form.dart';
 import 'package:tasks/screens/task/task_info.dart';
+import 'package:tasks/screens/task/task_tile.dart';
 import 'package:tasks/services/auth.dart';
 import 'package:tasks/services/database.dart';
 import 'package:tasks/shared/color.dart';
@@ -75,11 +76,21 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                 children: <Widget>[
                   _backBgCover(),
                   _header(),
-                  _currentTaskHolder(),
+                  StreamProvider<List<Task>>.value(
+                    value: DatabaseService().userTaskData,
+                    child: CurrentTaskTile(),
+                  ),
                 ],
               ),
               SizedBox(
                 height: 50.0,
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 15),
+                child: StreamProvider<List<Task>>.value(
+                    value: DatabaseService().userTaskData,
+                    child: NextTaskTile(),
+                  ),
               ),
               Container(
                 height: 400,
@@ -92,6 +103,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
               SizedBox(
                 height: 50.0,
               ),
+              
               Container(
                 height: 20,
               ),
@@ -152,28 +164,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     );
   }
 
-  Positioned _currentTaskHolder() {
-    return Positioned(
-      bottom: -45,
-      child: Container(
-        height: 100.0,
-        width: MediaQuery.of(context).size.width - 40,
-        padding: EdgeInsets.all(10),
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(28)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black12,
-                spreadRadius: 5.5,
-                blurRadius: 5.5,
-              )
-            ]),
-        child: _currentTaskCard(),
-      ),
-    );
-  }
-
   Container _backBgCover() {
     return Container(
       height: 155.0,
@@ -190,219 +180,9 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   Positioned _header() {
     return Positioned(
       left: 20,
-      bottom: 75,
+      bottom: 85,
       child: ProfileInfo(),
     );
   }
 
-  Widget _nextAppointmentText() {
-    return Container(
-      margin: EdgeInsets.only(top: 20.0, bottom: 20.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text(
-            'Your Next Task',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-              color: Colors.black,
-            ),
-          ),
-          Text(
-            'Pending: 1,250',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: cDarkPink2,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Container _taskCard() {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-      ),
-      child: Column(
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              CircleAvatar(
-                backgroundColor: Color(0xFFD9D9D9),
-                backgroundImage: NetworkImage(USER_IMAGE),
-                radius: 36.0,
-              ),
-              RichText(
-                text: TextSpan(
-                  text: 'Dr Dan MlayahFX',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    height: 1.5,
-                  ),
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: '\nSunday,May 5th at 8:00 PM',
-                      style: TextStyle(
-                        color: Colors.black45,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 15,
-                      ),
-                    ),
-                    TextSpan(
-                      text: '\n570 Kyemmer Stores \nNairobi Kenya C -54 Drive',
-                      style: TextStyle(
-                        color: Colors.black38,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Icon(
-                  Icons.arrow_forward_ios,
-                  color: Colors.grey[400],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 8.0,
-          ),
-          Divider(
-            color: Colors.grey[200],
-            height: 3,
-            thickness: 1,
-          ),
-          SizedBox(
-            height: 8.0,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              _iconBuilder(LineAwesomeIcons.check_circle, 'Check-in'),
-              _iconBuilder(LineAwesomeIcons.times_circle, 'Cancel'),
-              _iconBuilder(LineAwesomeIcons.calendar_times_o, 'Calender'),
-              _iconBuilder(LineAwesomeIcons.compass, 'Directions'),
-            ],
-          )
-        ],
-      ),
-    );
-  }
-
-  Container _currentTaskCard() {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 5.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-      ),
-      child: Column(
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              RichText(
-                text: TextSpan(
-                  text: 'Dr Dan MlayahFX',
-                  style: TextStyle(
-                    color: cDarkPink4,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: '\nSunday,May 5th at 8:00 PM',
-                      style: TextStyle(
-                        color: Colors.black45,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 15,
-                      ),
-                    ),
-                    TextSpan(
-                      text: '\n570 Kyemmer Stores \nNairobi Kenya C -54 Drive',
-                      style: TextStyle(
-                        color: Colors.black38,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Icon(
-                  Icons.arrow_forward_ios,
-                  color: Colors.grey[400],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Column _iconBuilder(icon, title) {
-    return Column(
-      children: <Widget>[
-        Icon(
-          icon,
-          size: 28,
-          color: Colors.black,
-        ),
-        SizedBox(
-          height: 8.0,
-        ),
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w300,
-            color: Colors.black,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _areaSpecialistsText() {
-    return Container(
-      margin: EdgeInsets.only(top: 20.0, bottom: 20.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text(
-            'Specialist In Your Area',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-              color: Colors.black,
-            ),
-          ),
-          Text(
-            'See All',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: cDarkPink2,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
