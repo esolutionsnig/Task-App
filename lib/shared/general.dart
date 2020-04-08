@@ -114,7 +114,7 @@ const redGradient = LinearGradient(
 );
 
 const USER_IMAGE='https://cdn4.iconfinder.com/data/icons/people-avatar-flat-1/64/girl_chubby_beautiful_people_woman_lady_avatar-512.png';
-const TASK_IMAGE='https://cdn4.iconfinder.com/data/icons/people-avatar-flat-1/64/girl_chubby_beautiful_people_woman_lady_avatar-512.png';
+const TASK_IMAGE='https://firebasestorage.googleapis.com/v0/b/tasks-etech.appspot.com/o/taskIcon.png?alt=media&token=1ec9f338-39a5-4e86-9235-a664cb3b5a79';
 const MALE_ICON ='https://firebasestorage.googleapis.com/v0/b/tasks-etech.appspot.com/o/maleicon.png?alt=media&token=1733742c-4ece-4c0f-8def-ff79fdfb2ff8';
 const FEMALE_ICON ='https://firebasestorage.googleapis.com/v0/b/tasks-etech.appspot.com/o/femaleicon.png?alt=media&token=852d21a8-b6d5-4445-8c58-7a53aadd2618';
 const NEW_USER_ICON ='https://firebasestorage.googleapis.com/v0/b/tasks-etech.appspot.com/o/newusericon.png?alt=media&token=fc4e5092-1a8f-4f75-a9ab-6820ead55d7e';

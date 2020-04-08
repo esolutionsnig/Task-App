@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tasks/models/profile.dart';
+import 'package:tasks/models/task.dart';
 import 'package:tasks/models/user.dart';
 
 class DatabaseService {
@@ -7,11 +8,50 @@ class DatabaseService {
   DatabaseService({this.uid});
 
   // Collection reference
-  final CollectionReference profileCollection =
-      Firestore.instance.collection('profiles');
-  final CollectionReference taskCollection =
-      Firestore.instance.collection('tasks');
+  final CollectionReference profileCollection = Firestore.instance.collection('profiles');
+  final CollectionReference taskCollection = Firestore.instance.collection('tasks');
 
+  // Add new task
+  Future addUserTask(String userId, String title, String description, DateTime startDateTime, DateTime endDateTime, String priority, String status) async {
+    var data = ({
+      'userId': userId,
+      'title': title,
+      'description': description,
+      'startDateTime': startDateTime,
+      'endDateTime': endDateTime,
+      'priority': priority,
+      'status': status,
+    });
+    return await taskCollection.document().setData(data);
+  }
+
+  // Task List
+  List<Task> _tasksFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.documents.map((doc) {
+      return Task(
+        id: doc.documentID,
+        userId: doc.data['userId'] ?? '',
+        title: doc.data['title'] ?? '',
+        description: doc.data['description'] ?? '',
+        startDateTime: doc.data['startDateTime'] ?? '',
+        endDateTime: doc.data['endDateTime'] ?? '',
+        priority: doc.data['priority'] ?? '',
+        status: doc.data['status'] ?? '',
+      );
+    }).toList();
+  }
+
+  // Get task doc stream
+  Stream<List<Task>> get userTaskData {
+    return taskCollection.snapshots().map(_tasksFromSnapshot);
+  }
+
+  // Get User Task Stream
+  Stream<List<Task>> get tasks {
+    return taskCollection.snapshots().map(_tasksFromSnapshot);
+  }
+
+  // Update user profile
   Future updateUserData(String surname, String firstname, int gender, String avatar) async {
     return await profileCollection.document(uid).setData({
       'surname': surname,

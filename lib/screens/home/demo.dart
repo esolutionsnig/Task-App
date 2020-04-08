@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:tasks/models/profile.dart';
-import 'package:tasks/models/task.dart';
 import 'package:tasks/screens/home/profile_form.dart';
 import 'package:tasks/screens/task/task_form.dart';
-import 'package:tasks/screens/task/task_info.dart';
 import 'package:tasks/services/auth.dart';
 import 'package:tasks/services/database.dart';
 import 'package:tasks/shared/color.dart';
@@ -81,19 +79,23 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
               SizedBox(
                 height: 50.0,
               ),
-              Container(
-                height: 400,
-                padding: EdgeInsets.all(15),
-                child: StreamProvider<List<Task>>.value(
-                  value: DatabaseService().userTaskData,
-                  child: TaskInfo(),
+              SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      _nextAppointmentText(),
+                      _taskCard(),
+                      _areaSpecialistsText(),
+                      _specialistsCardInfo(),
+                      _specialistsCardInfo(),
+                      _specialistsCardInfo(),
+                      _specialistsCardInfo(),
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 50.0,
-              ),
-              Container(
-                height: 20,
               ),
             ],
           ),
@@ -405,4 +407,120 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       ),
     );
   }
+
+  Widget _specialistsCardInfo() {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
+      margin: EdgeInsets.only(
+        bottom: 20.0,
+      ),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 1.0,
+              blurRadius: 6.0,
+            ),
+          ]),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              CircleAvatar(
+                backgroundColor: Color(0xFFD9D9D9),
+                backgroundImage: NetworkImage(TASK_IMAGE),
+                radius: 36.0,
+              ),
+              SizedBox(
+                width: 10.0,
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  RichText(
+                    text: TextSpan(
+                      text: 'Wellness\n',
+                      style: TextStyle(
+                        color: Colors.purple,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        height: 1.3,
+                      ),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: 'Dr Ayor Kruger',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        TextSpan(
+                          text: '\nPoplar Pharma Limited',
+                          style: TextStyle(
+                            color: Colors.black45,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 15,
+                          ),
+                        ),
+                        TextSpan(
+                          text: '\nDermatologist \nSAn Franscisco CA | 5 min',
+                          style: TextStyle(
+                            color: Colors.black38,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 6.0,
+                  ),
+                  RaisedButton(
+                    onPressed: () {},
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(80.0)),
+                    padding: const EdgeInsets.all(0.0),
+                    child: Ink(
+                      decoration: const BoxDecoration(
+                        gradient: pinkGradient,
+                        borderRadius: BorderRadius.all(Radius.circular(80.0)),
+                      ),
+                      child: Container(
+                        constraints: const BoxConstraints(
+                            minWidth: 88.0,
+                            minHeight: 36.0), // min sizes for Material buttons
+                        alignment: Alignment.center,
+                        child: const Text(
+                          'Book Visit',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w300,
+                              fontSize: 13,
+                              color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          Icon(
+            LineAwesomeIcons.heart,
+            color: cDarkPink1,
+            size: 36,
+          ),
+        ],
+      ),
+    );
+  }
+  
 }

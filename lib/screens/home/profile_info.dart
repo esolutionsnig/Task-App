@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:tasks/models/profile.dart';
 import 'package:tasks/shared/color.dart';
-import 'package:tasks/shared/general.dart';
 
 class ProfileInfo extends StatefulWidget {
   @override
