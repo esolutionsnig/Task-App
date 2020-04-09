@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:tasks/models/task.dart';
 import 'package:tasks/shared/color.dart';
 import 'package:tasks/shared/general.dart';
@@ -13,7 +12,7 @@ class TaskTile extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
       margin: EdgeInsets.only(bottom: 20.0, right: 20.0),
-      width: MediaQuery.of(context).size.width * 0.85,
+      width: MediaQuery.of(context).size.width * 0.81,
       decoration: BoxDecoration(
         color: cFormFillColor,
         borderRadius: BorderRadius.circular(12.0),
@@ -49,8 +48,8 @@ class TaskTile extends StatelessWidget {
                     children: <Widget>[
                       Container(
                         padding: EdgeInsets.only(
-                            right: 16.0, bottom: 16.0, left: 16.0),
-                        width: MediaQuery.of(context).size.width * 0.55,
+                            right: 10.0, bottom: 16.0, left: 16.0),
+                        width: MediaQuery.of(context).size.width * 0.58,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
@@ -85,11 +84,6 @@ class TaskTile extends StatelessWidget {
                     ],
                   ),
                 ],
-              ),
-              Icon(
-                LineAwesomeIcons.tasks,
-                color: task.status == 'Completed' ? cTeal : task.status == 'Started' ? cPurple : cRed,
-                size: 30,
               ),
             ],
           ),

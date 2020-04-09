@@ -57,17 +57,22 @@ class DatabaseService {
 
   // Get User Task Stream
   Stream<List<Task>> get tasks {
-    return taskCollection.snapshots().map(_tasksFromSnapshot);
+    return taskCollection.orderBy('startDateTime').snapshots().map(_tasksFromSnapshot);
+  }
+
+  // Get User Current Task Stream
+  Stream<List<Task>> get currentTask {
+    return taskCollection.limit(1).snapshots().map(_tasksFromSnapshot);
   }
 
   // Get User Upcoming Task Stream
   Stream<List<Task>> get upcomingTasks {
-    return taskCollection.where('status', isEqualTo: 'Not Started').snapshots().map(_tasksFromSnapshot);
+    return taskCollection.orderBy('startDateTime').where('status', isEqualTo: 'Not Started').snapshots().map(_tasksFromSnapshot);
   }
 
   // Get User Completed Task Stream
   Stream<List<Task>> get completedTasks {
-    return taskCollection.where('status', isEqualTo: 'Completed').snapshots().map(_tasksFromSnapshot);
+    return taskCollection.orderBy('startDateTime').where('status', isEqualTo: 'Completed').snapshots().map(_tasksFromSnapshot);
   }
 
   // Update user profile

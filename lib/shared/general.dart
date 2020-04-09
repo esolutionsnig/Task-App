@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:tasks/shared/color.dart';
 
 const textInputDecoration = InputDecoration(
@@ -98,6 +99,83 @@ Widget divider() {
   );
 }
 
+Widget getDateTimeShimmer() {
+  return Shimmer.fromColors(
+    baseColor: cFormFillColor,
+    highlightColor: cGrey,
+    child: Row(
+      children: <Widget>[
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              width: 250.0,
+              height: 30.0,
+              decoration: BoxDecoration(
+                color: cWhite3,
+                borderRadius: BorderRadius.circular(25.0),
+              ),
+            ),
+            SizedBox(
+              height: 5.0,
+            ),
+            Container(
+              width: 250.0,
+              height: 30.0,
+              decoration: BoxDecoration(
+                  color: cWhite3, borderRadius: BorderRadius.circular(25.0)),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
+Widget getShimmer() {
+  return Shimmer.fromColors(
+    baseColor: cFormFillColor,
+    highlightColor: cDarkPink2,
+    child: Row(
+      children: <Widget>[
+        Container(
+          width: 65.0,
+          height: 65.0,
+          margin: EdgeInsets.fromLTRB(0.0, 5.0, 10.0, 0.0),
+          child: Icon(
+            Icons.account_box,
+            size: 60,
+          ),
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              width: 160.0,
+              height: 30.0,
+              decoration: BoxDecoration(
+                color: cDarkPink2,
+                borderRadius: BorderRadius.circular(25.0),
+              ),
+            ),
+            SizedBox(
+              height: 5.0,
+            ),
+            Container(
+              width: 160.0,
+              height: 30.0,
+              decoration: BoxDecoration(
+                  color: cDarkPink2, borderRadius: BorderRadius.circular(25.0)),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
 Widget headerText(String title, int total) {
   return Container(
     margin: EdgeInsets.only(top: 14.0, bottom: 2.0, left: 20, right: 20),
@@ -114,7 +192,9 @@ Widget headerText(String title, int total) {
                 color: Colors.black,
               ),
             ),
-            SizedBox(width: 6,),
+            SizedBox(
+              width: 6,
+            ),
             Text(
               '$total',
               style: TextStyle(
@@ -127,8 +207,16 @@ Widget headerText(String title, int total) {
         ),
         Row(
           children: <Widget>[
-            Icon(Icons.arrow_back_ios, size: 16.0, color: cDarkPink3,),
-            Icon(Icons.arrow_forward_ios, size: 16.0, color: cDarkPink3,),
+            Icon(
+              Icons.arrow_back_ios,
+              size: 16.0,
+              color: cDarkPink3,
+            ),
+            Icon(
+              Icons.arrow_forward_ios,
+              size: 16.0,
+              color: cDarkPink3,
+            ),
           ],
         ),
       ],

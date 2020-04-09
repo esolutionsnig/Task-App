@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasks/models/profile.dart';
@@ -6,11 +8,11 @@ import 'package:tasks/screens/home/profile_form.dart';
 import 'package:tasks/screens/task/all_task_info.dart';
 import 'package:tasks/screens/task/completed_task_info.dart';
 import 'package:tasks/screens/task/current_task_tile.dart';
-import 'package:tasks/screens/task/next_task_tile.dart';
 import 'package:tasks/screens/task/task_form.dart';
 import 'package:tasks/screens/task/upcoming_task_info.dart';
 import 'package:tasks/services/auth.dart';
 import 'package:tasks/services/database.dart';
+import 'package:tasks/services/world_time.dart';
 import 'package:tasks/shared/color.dart';
 import 'package:tasks/shared/general.dart';
 import 'package:tasks/screens/home/profile_info.dart';
@@ -22,6 +24,42 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> with TickerProviderStateMixin {
   final AuthService _auth = AuthService();
+
+  String time;
+  String date;
+  bool fetching = true;
+
+  setUpTimedFetch() {
+    Timer.periodic(Duration(milliseconds: 50000), (timer) {
+      setUpWorldTime();
+    });
+  }
+
+  void setUpWorldTime() async {
+    try {
+      WorldTime worldTime = WorldTime(
+        location: 'Lagos',
+        flag: 'nigeria.png',
+        url: 'Africa/Lagos',
+      );
+      await worldTime.getTime();
+      setState(() {
+        time = worldTime.time;
+        date = worldTime.date;
+        fetching = false;
+      });
+    } catch (e) {
+      fetching = false;
+      print(e);
+      return null;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setUpTimedFetch();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,22 +116,19 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                 children: <Widget>[
                   _backBgCover(),
                   _header(),
-                  StreamProvider<List<Task>>.value(
-                    value: DatabaseService().userTaskData,
-                    child: CurrentTaskTile(),
-                  ),
+                  fetching ? _dateTimeLoadder() : _dateTimeHolder(),
                 ],
               ),
               SizedBox(
                 height: 50.0,
               ),
               // Next Task
-              headerTextNextTask("Your Next Task"),
+              headerTextNextTask("Your Current Task"),
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 15),
                 child: StreamProvider<List<Task>>.value(
-                  value: DatabaseService().userTaskData,
-                  child: NextTaskTile(),
+                  value: DatabaseService().currentTask,
+                  child: CurrentTaskTile(),
                 ),
               ),
               Padding(
@@ -194,7 +229,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
 
   Widget headerTextNextTask(String title) {
     return Container(
-      margin: EdgeInsets.only(top: 40.0, bottom: 20.0, left: 20, right: 20),
+      margin: EdgeInsets.only(top: 15.0, bottom: 20.0, left: 20, right: 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -229,6 +264,85 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       left: 20,
       bottom: 85,
       child: ProfileInfo(),
+    );
+  }
+
+  Positioned _dateTimeHolder() {
+    return Positioned(
+      bottom: -33,
+      child: Container(
+        height: 80.0,
+        width: MediaQuery.of(context).size.width - 40,
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(28)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              spreadRadius: 5.5,
+              blurRadius: 5.5,
+            )
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Container(
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    date,
+                    style: TextStyle(
+                      color: cDarkPink1,
+                      fontSize: 24,
+                    ),
+                  ),
+                  Text("Today's Date".toUpperCase()),
+                ],
+              ),
+            ),
+            Row(
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                    Text(
+                      time,
+                      style: TextStyle(
+                        color: cDarkPink3,
+                        fontSize: 36.0,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Positioned _dateTimeLoadder() {
+    return Positioned(
+      bottom: -45,
+      child: Container(
+        height: 100.0,
+        width: MediaQuery.of(context).size.width - 40,
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(28)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                spreadRadius: 5.5,
+                blurRadius: 5.5,
+              )
+            ]),
+        child: getDateTimeShimmer(),
+      ),
     );
   }
 }
