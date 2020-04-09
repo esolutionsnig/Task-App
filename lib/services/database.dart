@@ -10,9 +10,18 @@ class DatabaseService {
   // Collection reference
   final CollectionReference profileCollection = Firestore.instance.collection('profiles');
   final CollectionReference taskCollection = Firestore.instance.collection('tasks');
+  // final CollectionReference upcomingTaskCollection = Firestore.instance.collection('tasks').where('status', isEqualTo: 'Not Started');
+  // final CollectionReference completedTaskCollection = Firestore.instance.collection('tasks').where('status', isEqualTo: 'Completed');
 
   // Add new task
-  Future addUserTask(String userId, String title, String description, DateTime startDateTime, DateTime endDateTime, String priority, String status) async {
+  Future addUserTask(
+      String userId,
+      String title,
+      String description,
+      DateTime startDateTime,
+      DateTime endDateTime,
+      String priority,
+      String status) async {
     var data = ({
       'userId': userId,
       'title': title,
@@ -51,8 +60,19 @@ class DatabaseService {
     return taskCollection.snapshots().map(_tasksFromSnapshot);
   }
 
+  // Get User Upcoming Task Stream
+  Stream<List<Task>> get upcomingTasks {
+    return taskCollection.where('status', isEqualTo: 'Not Started').snapshots().map(_tasksFromSnapshot);
+  }
+
+  // Get User Completed Task Stream
+  Stream<List<Task>> get completedTasks {
+    return taskCollection.where('status', isEqualTo: 'Completed').snapshots().map(_tasksFromSnapshot);
+  }
+
   // Update user profile
-  Future updateUserData(String surname, String firstname, int gender, String avatar) async {
+  Future updateUserData(
+      String surname, String firstname, int gender, String avatar) async {
     return await profileCollection.document(uid).setData({
       'surname': surname,
       'firstname': firstname,
@@ -91,7 +111,9 @@ class DatabaseService {
 
   // Get user doc stream'
   Stream<UserData> get userData {
-    return profileCollection.document(uid).snapshots().map(_userDataFromSnapshot);
+    return profileCollection
+        .document(uid)
+        .snapshots()
+        .map(_userDataFromSnapshot);
   }
-
 }

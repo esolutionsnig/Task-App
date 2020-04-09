@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
+import 'package:provider/provider.dart';
 import 'package:tasks/models/task.dart';
 import 'package:tasks/shared/color.dart';
 import 'package:tasks/shared/general.dart';
 
-class TaskTile extends StatelessWidget {
-  final Task task;
-  TaskTile({this.task});
-
+class NextTaskTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final tasks = Provider.of<List<Task>>(context) ?? [];
+    // Get The First Task
+    var task = tasks[1];
     return Container(
       padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
-      margin: EdgeInsets.only(bottom: 20.0, right: 20.0),
-      width: MediaQuery.of(context).size.width * 0.85,
+      margin: EdgeInsets.only(bottom: 20.0),
       decoration: BoxDecoration(
-        color: cFormFillColor,
+        color: Colors.pink.withAlpha(25),
         borderRadius: BorderRadius.circular(12.0),
         boxShadow: [
           BoxShadow(
@@ -50,7 +50,7 @@ class TaskTile extends StatelessWidget {
                       Container(
                         padding: EdgeInsets.only(
                             right: 16.0, bottom: 16.0, left: 16.0),
-                        width: MediaQuery.of(context).size.width * 0.55,
+                        width: MediaQuery.of(context).size.width * 0.60,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
@@ -59,7 +59,7 @@ class TaskTile extends StatelessWidget {
                                 text: '${task.status} \n',
                                 style: TextStyle(
                                   color:
-                                      task.status == 'Completed' ? cTeal : task.status == 'Started' ? cPurple : cRed,
+                                      task.status == 'Started' ? cTeal : cRed,
                                   fontSize: 13,
                                   fontWeight: FontWeight.w400,
                                   height: 1.3,
@@ -88,13 +88,15 @@ class TaskTile extends StatelessWidget {
               ),
               Icon(
                 LineAwesomeIcons.tasks,
-                color: task.status == 'Completed' ? cTeal : task.status == 'Started' ? cPurple : cRed,
-                size: 30,
+                color: task.priority == 'HIGH'
+                    ? cHigh
+                    : task.priority == 'MEDIUM' ? cMedium : cLow,
+                size: 36,
               ),
             ],
           ),
           Container(
-            width: MediaQuery.of(context).size.width * 0.80,
+            width: MediaQuery.of(context).size.width * 0.98,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
