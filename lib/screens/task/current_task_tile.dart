@@ -16,7 +16,7 @@ class CurrentTaskTile extends StatelessWidget {
       task = t;
     });
     return task == null
-        ? getShimmer()
+        ? Text('')
         : Container(
             padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
             margin: EdgeInsets.only(bottom: 20.0),
@@ -244,94 +244,96 @@ class CurrentTaskTile extends StatelessWidget {
                         ),
                       ),
                     ),
-                    task.status == "Started"
-                        ? RaisedButton(
-                            onPressed: () {
-                              DatabaseService()
-                                  .markTaskCompleted(task.id, "Completed");
-                            },
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(80.0),
-                            ),
-                            padding: EdgeInsets.all(0.0),
-                            child: Ink(
-                              decoration: BoxDecoration(
-                                gradient: pinkGradient,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(80.0),
-                                ),
+                    task.status == 'Completed' ? Text('') : Container(
+                      child: task.status == "Started"
+                          ? RaisedButton(
+                              onPressed: () {
+                                DatabaseService()
+                                    .markTaskCompleted(task.id, "Completed");
+                              },
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(80.0),
                               ),
-                              child: Container(
-                                constraints: BoxConstraints(
-                                  minWidth: 88.0,
-                                  minHeight: 36.0,
-                                ), // min sizes for Material buttons
-                                alignment: Alignment.center,
-                                child: Row(
-                                  children: <Widget>[
-                                    Icon(
-                                      Icons.stop,
-                                      color: cWhite,
-                                    ),
-                                    Text(
-                                      'End',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w300,
-                                        fontSize: 16,
-                                        color: Colors.white,
+                              padding: EdgeInsets.all(0.0),
+                              child: Ink(
+                                decoration: BoxDecoration(
+                                  gradient: pinkGradient,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(80.0),
+                                  ),
+                                ),
+                                child: Container(
+                                  constraints: BoxConstraints(
+                                    minWidth: 88.0,
+                                    minHeight: 36.0,
+                                  ), // min sizes for Material buttons
+                                  alignment: Alignment.center,
+                                  child: Row(
+                                    children: <Widget>[
+                                      Icon(
+                                        Icons.stop,
+                                        color: cWhite,
                                       ),
-                                    ),
-                                    SizedBox(
-                                      width: 4.0,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          )
-                        : RaisedButton(
-                            onPressed: () {
-                              DatabaseService()
-                                  .markTaskStarted(task.id, 'Started');
-                            },
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(80.0),
-                            ),
-                            padding: EdgeInsets.all(0.0),
-                            child: Ink(
-                              decoration: BoxDecoration(
-                                gradient: pinkGradient,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(80.0)),
-                              ),
-                              child: Container(
-                                constraints: BoxConstraints(
-                                  minWidth: 88.0,
-                                  minHeight: 36.0,
-                                ), // min sizes for Material buttons
-                                alignment: Alignment.center,
-                                child: Row(
-                                  children: <Widget>[
-                                    Text(
-                                      'Start',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w300,
-                                        fontSize: 16,
-                                        color: Colors.white,
+                                      Text(
+                                        'End',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w300,
+                                          fontSize: 16,
+                                          color: Colors.white,
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(
-                                      width: 4.0,
-                                    ),
-                                    Icon(
-                                      Icons.play_arrow,
-                                      color: cWhite,
-                                    ),
-                                  ],
+                                      SizedBox(
+                                        width: 4.0,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            )
+                          : RaisedButton(
+                              onPressed: () {
+                                DatabaseService()
+                                    .markTaskStarted(task.id, 'Started');
+                              },
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(80.0),
+                              ),
+                              padding: EdgeInsets.all(0.0),
+                              child: Ink(
+                                decoration: BoxDecoration(
+                                  gradient: pinkGradient,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(80.0)),
+                                ),
+                                child: Container(
+                                  constraints: BoxConstraints(
+                                    minWidth: 88.0,
+                                    minHeight: 36.0,
+                                  ), // min sizes for Material buttons
+                                  alignment: Alignment.center,
+                                  child: Row(
+                                    children: <Widget>[
+                                      Text(
+                                        'Start',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w300,
+                                          fontSize: 16,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 4.0,
+                                      ),
+                                      Icon(
+                                        Icons.play_arrow,
+                                        color: cWhite,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
+                    ),
                     Column(
                       children: <Widget>[
                         Padding(

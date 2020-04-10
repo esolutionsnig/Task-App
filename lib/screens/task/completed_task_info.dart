@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasks/models/task.dart';
+import 'package:tasks/screens/task/completed_task.dart';
 import 'package:tasks/screens/task/task_tile.dart';
+import 'package:tasks/shared/color.dart';
 import 'package:tasks/shared/general.dart';
 
 class CompletedTaskInfo extends StatefulWidget {
@@ -27,6 +29,26 @@ class _CompletedTaskInfoState extends State<CompletedTaskInfo> {
             itemBuilder: (context, index) {
               return TaskTile(task: tasks[index]);
             },
+          ),
+        ) : Text(""),
+        tasksCount != 0 ? FlatButton(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => CompletedTask(),
+              ),
+            );
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                "View All Completed Tasks".toUpperCase(),
+                style: TextStyle(color: cDarkPink3, fontSize: 16.0),
+              ),
+              SizedBox(width: 15,),
+              Icon(Icons.arrow_forward, color: cDarkPink3,)
+            ],
           ),
         ) : Text(""),
       ],

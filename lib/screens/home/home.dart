@@ -36,7 +36,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   List<dynamic> quotes = [];
   List<dynamic> quote = [];
 
-  // Get List of Registered Users
+  // Get List of Quotes
   Future fetchQuotes() async {
     fetching = true;
     try {

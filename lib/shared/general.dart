@@ -176,6 +176,41 @@ Widget getShimmer() {
   );
 }
 
+Widget headerTextVertical(String title, int total) {
+  return Container(
+    margin: EdgeInsets.only(top: 33.0, bottom: 2.0, left: 20, right: 20),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Row(
+          children: <Widget>[
+            Text(
+              '$title',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+                color: Colors.black,
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: <Widget>[
+            Text(
+              '$total',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+                color: cDarkPink2,
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
 Widget headerText(String title, int total) {
   return Container(
     margin: EdgeInsets.only(top: 14.0, bottom: 2.0, left: 20, right: 20),

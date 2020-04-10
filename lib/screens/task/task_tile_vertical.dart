@@ -4,16 +4,16 @@ import 'package:tasks/services/database.dart';
 import 'package:tasks/shared/color.dart';
 import 'package:tasks/shared/general.dart';
 
-class TaskTile extends StatelessWidget {
+class TaskTileVertical extends StatelessWidget {
   final Task task;
-  TaskTile({this.task});
+  TaskTileVertical({this.task});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
-      margin: EdgeInsets.only(bottom: 20.0, right: 20.0),
-      width: MediaQuery.of(context).size.width * 0.81,
+      margin: EdgeInsets.only(bottom: 20.0, right: 0.0),
+      width: MediaQuery.of(context).size.width * 0.95,
       decoration: BoxDecoration(
         color: cFormFillColor,
         borderRadius: BorderRadius.circular(12.0),
@@ -50,7 +50,7 @@ class TaskTile extends StatelessWidget {
                       Container(
                         padding: EdgeInsets.only(
                             right: 10.0, bottom: 16.0, left: 16.0),
-                        width: MediaQuery.of(context).size.width * 0.58,
+                        width: MediaQuery.of(context).size.width * 0.65,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[

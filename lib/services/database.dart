@@ -60,7 +60,7 @@ class DatabaseService {
 
   // Get User Current Task Stream
   Stream<List<Task>> get currentTask {
-    return taskCollection.where('status', isEqualTo: 'Not Started').where('status', isEqualTo: 'Started').limit(1).snapshots().map(_tasksFromSnapshot);
+    return taskCollection.where('status', isEqualTo: 'Started').limit(1).snapshots().map(_tasksFromSnapshot);
   }
 
   // Get User Upcoming Task Stream
