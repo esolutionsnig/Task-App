@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -10,9 +12,9 @@ import 'package:tasks/screens/task/completed_task_info.dart';
 import 'package:tasks/screens/task/current_task_tile.dart';
 import 'package:tasks/screens/task/task_form.dart';
 import 'package:tasks/screens/task/upcoming_task_info.dart';
+import 'package:tasks/services/api.dart';
 import 'package:tasks/services/auth.dart';
 import 'package:tasks/services/database.dart';
-import 'package:tasks/services/world_time.dart';
 import 'package:tasks/shared/color.dart';
 import 'package:tasks/shared/general.dart';
 import 'package:tasks/screens/home/profile_info.dart';
@@ -25,40 +27,65 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> with TickerProviderStateMixin {
   final AuthService _auth = AuthService();
 
-  String time;
-  String date;
-  bool fetching = true;
+  bool fetching = false;
+  int x = 0;
+  int y = 1;
+  String text = '';
+  String author = '';
 
-  setUpTimedFetch() {
-    Timer.periodic(Duration(milliseconds: 50000), (timer) {
-      setUpWorldTime();
-    });
-  }
+  List<dynamic> quotes = [];
+  List<dynamic> quote = [];
 
-  void setUpWorldTime() async {
+  // Get List of Registered Users
+  Future fetchQuotes() async {
+    fetching = true;
     try {
-      WorldTime worldTime = WorldTime(
-        location: 'Lagos',
-        flag: 'nigeria.png',
-        url: 'Africa/Lagos',
-      );
-      await worldTime.getTime();
+      // Make API call
+      var res = await CallApi().getQuotes();
+      if (res.statusCode == 200) {
+        var body = json.decode(res.body);
+        setState(() {
+          quotes = body;
+          quote = quotes.sublist(x, y);
+          quote.forEach((f) {
+            text = f['text'];
+            author = f['author'];
+          });
+          fetching = false;
+        });
+      }
+    } catch (e) {
       setState(() {
-        time = worldTime.time;
-        date = worldTime.date;
         fetching = false;
       });
-    } catch (e) {
-      fetching = false;
-      print(e);
+      print(e.toString());
       return null;
     }
+  }
+
+  // Random Number generator
+  void randomNumberGenerator() {
+    var rng = new Random();
+    setState(() {
+      x = rng.nextInt(10);
+      y = x + 1;
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    setUpTimedFetch();
+    fetchQuotes();
+    Timer.periodic(Duration(seconds: 60), (timer) {
+      randomNumberGenerator();
+      setState(() {
+        quote = quotes.sublist(x, y);
+        quote.forEach((f) {
+          text = f['text'];
+          author = f['author'];
+        });
+      });
+    });
   }
 
   @override
@@ -116,7 +143,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                 children: <Widget>[
                   _backBgCover(),
                   _header(),
-                  fetching ? _dateTimeLoadder() : _dateTimeHolder(),
+                  fetching ? _qouteLoadder() : _quotesHolder(text, author),
                 ],
               ),
               SizedBox(
@@ -267,11 +294,11 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     );
   }
 
-  Positioned _dateTimeHolder() {
+  Positioned _quotesHolder(String text, String author) {
     return Positioned(
-      bottom: -33,
+      bottom: -40,
       child: Container(
-        height: 80.0,
+        height: 105.0,
         width: MediaQuery.of(context).size.width - 40,
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
@@ -289,34 +316,34 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Container(
-              child: Column(
+              width: MediaQuery.of(context).size.width * 0.82,
+              child: ListView(
                 children: <Widget>[
                   Text(
-                    date,
+                    text,
                     style: TextStyle(
-                      color: cDarkPink1,
-                      fontSize: 24,
+                      color: cGrey,
+                      fontSize: 18,
                     ),
                   ),
-                  Text("Today's Date".toUpperCase()),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        "Author:",
+                        style: TextStyle(color: Colors.black54),
+                      ),
+                      SizedBox(
+                        width: 8.0,
+                      ),
+                      Text(
+                        author,
+                        style: TextStyle(color: cDarkPink3),
+                      ),
+                    ],
+                  ),
                 ],
               ),
-            ),
-            Row(
-              children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    Text(
-                      time,
-                      style: TextStyle(
-                        color: cDarkPink3,
-                        fontSize: 36.0,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
             ),
           ],
         ),
@@ -324,7 +351,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     );
   }
 
-  Positioned _dateTimeLoadder() {
+  Positioned _qouteLoadder() {
     return Positioned(
       bottom: -45,
       child: Container(

@@ -102,7 +102,7 @@ Widget divider() {
 Widget getDateTimeShimmer() {
   return Shimmer.fromColors(
     baseColor: cFormFillColor,
-    highlightColor: cGrey,
+    highlightColor: cWhite3,
     child: Row(
       children: <Widget>[
         Column(
@@ -111,7 +111,7 @@ Widget getDateTimeShimmer() {
           children: <Widget>[
             Container(
               width: 250.0,
-              height: 30.0,
+              height: 60.0,
               decoration: BoxDecoration(
                 color: cWhite3,
                 borderRadius: BorderRadius.circular(25.0),
@@ -122,7 +122,7 @@ Widget getDateTimeShimmer() {
             ),
             Container(
               width: 250.0,
-              height: 30.0,
+              height: 15.0,
               decoration: BoxDecoration(
                   color: cWhite3, borderRadius: BorderRadius.circular(25.0)),
             ),

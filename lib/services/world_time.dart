@@ -12,7 +12,7 @@ class WorldTime {
   String flag;
   String url;
 
-  WorldTime({ this.location, this.time, this.flag, this.url });
+  WorldTime({ this.location, this.seconds, this.time, this.flag, this.url });
 
   Future<void> getTime() async {
     // make the request

@@ -10,8 +10,6 @@ class DatabaseService {
   // Collection reference
   final CollectionReference profileCollection = Firestore.instance.collection('profiles');
   final CollectionReference taskCollection = Firestore.instance.collection('tasks');
-  // final CollectionReference upcomingTaskCollection = Firestore.instance.collection('tasks').where('status', isEqualTo: 'Not Started');
-  // final CollectionReference completedTaskCollection = Firestore.instance.collection('tasks').where('status', isEqualTo: 'Completed');
 
   // Add new task
   Future addUserTask(
@@ -62,7 +60,7 @@ class DatabaseService {
 
   // Get User Current Task Stream
   Stream<List<Task>> get currentTask {
-    return taskCollection.limit(1).snapshots().map(_tasksFromSnapshot);
+    return taskCollection.where('status', isEqualTo: 'Not Started').where('status', isEqualTo: 'Started').limit(1).snapshots().map(_tasksFromSnapshot);
   }
 
   // Get User Upcoming Task Stream
@@ -75,9 +73,23 @@ class DatabaseService {
     return taskCollection.orderBy('startDateTime').where('status', isEqualTo: 'Completed').snapshots().map(_tasksFromSnapshot);
   }
 
+  // Mark task as started
+  Future markTaskStarted(String taskId, String status) async {
+    return await taskCollection.document(taskId).updateData({'status': status});
+  }
+
+  // Mark task as completed
+  Future markTaskCompleted(String taskId, String status) async {
+    return await taskCollection.document(taskId).updateData({'status': status});
+  }
+
+  // Delete task
+  Future deleteTask(String taskId) async {
+    return await taskCollection.document(taskId).delete();
+  }
+
   // Update user profile
-  Future updateUserData(
-      String surname, String firstname, int gender, String avatar) async {
+  Future updateUserData(String surname, String firstname, int gender, String avatar) async {
     return await profileCollection.document(uid).setData({
       'surname': surname,
       'firstname': firstname,
