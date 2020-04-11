@@ -1,6 +1,6 @@
 # tasks
 
-A new Flutter project.
+If you're looking for an app that will help you plan your day, build good habits and encourage you to cross things off your to-do list, task is the option for you.
 
 ## Getting Started
 
