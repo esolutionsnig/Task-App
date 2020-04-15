@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:tasks/models/task.dart';
@@ -7,34 +5,25 @@ import 'package:tasks/services/database.dart';
 import 'package:tasks/shared/color.dart';
 import 'package:tasks/shared/general.dart';
 
-class TaskTile extends StatefulWidget {
+class TaskListTile extends StatefulWidget {
   final Task task;
-  TaskTile({Key key, @required this.task}) : super(key: key);
+  TaskListTile({Key key, @required this.task}) : super(key: key);
   @override
-  _TaskTileState createState() => _TaskTileState();
+  _TaskListTileState createState() => _TaskListTileState();
 }
 
-class _TaskTileState extends State<TaskTile> {
+class _TaskListTileState extends State<TaskListTile> {
   bool loading = false;
+  bool endedCompletely = false;
+  bool checkExpired = false;
+
   // get task duration and count down
   var startDateTime,
       endDateTime,
       remainingSeconds,
       remainingSeconds2,
       duration,
-      days,
-      minutes,
-      hours,
-      seconds,
-      now,
-      x,
-      y,
-      taskTimeLeftPercent;
-  double taskTimeLeftPercent100 = 100.0;
-  int dM = 60;
-  Color progColor;
-  bool ended = false;
-  bool checkEnded = false;
+      now;
 
   void taskDurationCountDown() {
     now = DateTime.now();
@@ -42,238 +31,100 @@ class _TaskTileState extends State<TaskTile> {
     endDateTime = widget.task.endDateTime.toDate();
     remainingSeconds = endDateTime.difference(now).inSeconds;
 
-    x = endDateTime.difference(startDateTime).inSeconds;
-    y = endDateTime.difference(now).inSeconds;
-
     if (remainingSeconds < 0) {
-      checkEnded = true;
+      checkExpired = true;
+      if (widget.task.status == "Completed") {
+        endedCompletely = true;
+      } else if (widget.task.status == "Started") {
+        endedCompletely = false;
+      }
     } else {
-      checkEnded = false;
+      checkExpired = false;
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    if (this.mounted) {
-      setState(() {
-        taskTimeLeftPercent = 0.0;
-      });
-    }
-    // if (widget.task != null) {
-    taskDurationCountDown();
-    Timer.periodic(Duration(seconds: 1), (timer) {
-      if (this.mounted) {
-        setState(() {
-          remainingSeconds = remainingSeconds - 1;
-          var d1 = Duration(seconds: remainingSeconds);
-          var d2 = Duration(seconds: remainingSeconds).toString();
-          var arr = d2.split('.');
-          duration = arr[0];
-          days = d1.inDays;
-          hours = d1.inHours;
-
-          // Check if end date is less than today's date
-          // var endFormat = '00:00:00';
-          if (remainingSeconds < 0) {
-            ended = true;
-          } else {
-            ended = false;
-          }
-        });
-      }
-    });
-    Timer.periodic(Duration(seconds: 1), (timer) {
-      if (this.mounted) {
-        setState(() {
-          x = x - 1;
-          y = y - 1;
-          taskTimeLeftPercent = (y / x).toStringAsFixed(2);
-          taskTimeLeftPercent = double.parse(taskTimeLeftPercent);
-          taskTimeLeftPercent100 = taskTimeLeftPercent * 100;
-          taskTimeLeftPercent100 = taskTimeLeftPercent100.toDouble();
-          // Set Color
-          if (taskTimeLeftPercent100 > 65 && taskTimeLeftPercent100 <= 100) {
-            progColor = cTeal;
-          } else if (taskTimeLeftPercent100 > 45 &&
-              taskTimeLeftPercent100 < 65) {
-            progColor = cYellow;
-          } else if (taskTimeLeftPercent100 > 0 &&
-              taskTimeLeftPercent100 < 45) {
-            progColor = cRed;
-          }
-        });
-      }
-    });
-    // }
   }
 
   @override
   Widget build(BuildContext context) {
+    taskDurationCountDown();
     return InkWell(
       onTap: () {
         _showTaskInfo(context);
       },
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 10.0),
-        margin: EdgeInsets.only(bottom: 20.0, right: 20.0),
-        width: MediaQuery.of(context).size.width * 0.81,
-        decoration: BoxDecoration(
-          color: cFormFillColor,
-          borderRadius: BorderRadius.circular(12.0),
-          boxShadow: [
-            BoxShadow(
-              color: cTeal.withAlpha(10),
-              spreadRadius: 1.5,
-              blurRadius: 3.0,
-            ),
-          ],
-        ),
-        child: Column(
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    CircleAvatar(
-                      backgroundColor: Colors.transparent,
-                      backgroundImage: NetworkImage(TASK_IMAGE),
-                      radius: 20.0,
-                    ),
-                    SizedBox(
-                      width: 6.0,
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.only(
-                            right: 8.0,
-                            bottom: 8.0,
-                            left: 8.0,
-                          ),
-                          width: MediaQuery.of(context).size.width * 0.58,
-                          child: Text(
-                            widget.task.title,
-                            style: TextStyle(
-                              color: cBlack,
-                              fontSize: 15.0,
-                              fontWeight: FontWeight.w600,
-                              height: 1.3,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width * 0.80,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    '${widget.task.description}'.substring(0, 70) + '...',
-                    style: TextStyle(
-                      color: Colors.black87,
-                      fontWeight: FontWeight.w400,
-                      fontSize: 15,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 6.0,
-                  ),
-                  taskDivider(),
-                  checkEnded
+      child: Card(
+        color: checkExpired
+            ? endedCompletely ? cTealLite5 : cRedLite5
+            : cFormFillColor,
+        child: ListTile(
+          leading: Column(
+            children: <Widget>[
+              CircleAvatar(
+                backgroundColor: Colors.transparent,
+                backgroundImage: NetworkImage(TASK_IMAGE),
+                radius: 15.0,
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              checkExpired
+                  ? endedCompletely
                       ? Text(
-                          "Time allocated to this task has elapsed.",
+                          "",
                           style: TextStyle(
                             color: cRed,
+                            fontSize: 1.0,
                           ),
                         )
-                      : ended
-                          ? Container(
-                              margin: EdgeInsets.only(top: 6.0),
-                              child: Text(
-                                "Time allocated to this task has elapsed.",
-                                style: TextStyle(
-                                  color: cRed,
-                                ),
-                              ),
-                            )
-                          : Container(
-                              margin: EdgeInsets.only(top: 6.0),
-                              child: taskTimeLeftPercent != null
-                                  ? Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            Text(
-                                              'Time Left: '.toUpperCase(),
-                                              style: TextStyle(
-                                                fontSize: 16.0,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                            Text(
-                                              '$duration',
-                                              style: TextStyle(
-                                                color: progColor,
-                                                fontSize: 24.0,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: <Widget>[
-                                            Icon(
-                                              LineAwesomeIcons.tasks,
-                                              color:
-                                                  widget.task.priority == 'HIGH'
-                                                      ? cHigh
-                                                      : widget.task.priority ==
-                                                              'MEDIUM'
-                                                          ? cMedium
-                                                          : cLow,
-                                              size: 20,
-                                            ),
-                                            Text(
-                                              widget.task.priority,
-                                              style: TextStyle(
-                                                color: widget.task.priority ==
-                                                        'HIGH'
-                                                    ? cHigh
-                                                    : widget.task.priority ==
-                                                            'MEDIUM'
-                                                        ? cMedium
-                                                        : cLow,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    )
-                                  : Text(
-                                      '',
-                                      style: TextStyle(fontSize: 5),
-                                    ),
-                            ),
-                ],
-              ),
+                      : Text(
+                          "Elapsed",
+                          style: TextStyle(
+                            color: cRed,
+                            fontSize: 8.0,
+                          ),
+                        )
+                  : Text(
+                      "",
+                      style: TextStyle(
+                        color: cRed,
+                        fontSize: 1.0,
+                      ),
+                    ),
+              widget.task.status == "Not Started"
+                  ? Text(
+                      widget.task.status,
+                      style: TextStyle(
+                        color: cRed,
+                        fontSize: 8.0,
+                      ),
+                    )
+                  : widget.task.status == "Started"
+                      ? Text(
+                          widget.task.status,
+                          style: TextStyle(
+                            color: cBlack,
+                            fontSize: 8.0,
+                          ),
+                        )
+                      : Text(
+                          widget.task.status,
+                          style: TextStyle(
+                            color: cTeal,
+                            fontSize: 8.0,
+                          ),
+                        ),
+            ],
+          ),
+          title: Text(
+            widget.task.title,
+            style: TextStyle(
+              color: Colors.black87,
+              fontSize: 15.0,
+              fontWeight: FontWeight.w600,
+              height: 1.3,
             ),
-          ],
+          ),
+          subtitle: Text(
+            widget.task.description.length < 70 ? '${widget.task.description}' : '${widget.task.description}'.substring(0, 70) + '...',
+          ),
         ),
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:custom_switch/custom_switch.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:tasks/models/user.dart';
@@ -16,6 +17,7 @@ class _TaskFormState extends State<TaskForm> {
   final _formKey = GlobalKey<FormState>();
 
   String _title;
+  int _titleCount = 50;
   String _description;
   String _priority;
   String _status;
@@ -57,6 +59,15 @@ class _TaskFormState extends State<TaskForm> {
     }
     setState(() {
       selectedPriority = val;
+    });
+  }
+
+  // Get and Set Max Title Character
+  getTitleCount(String title) {
+    int x = title.length;
+    setState(() {
+      _titleCount = 50 - x;
+      _title = title;
     });
   }
 
@@ -107,34 +118,56 @@ class _TaskFormState extends State<TaskForm> {
                 SizedBox(
                   height: 20,
                 ),
-                Text(
-                  "Title",
-                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      "Title",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
+                    ),
+                    Text(
+                      'Remaining: $_titleCount',
+                      style: TextStyle(
+                        color: _titleCount > 0 ? cBlack : cRed,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
                 ),
                 SizedBox(
                   height: 8,
                 ),
                 TextFormField(
+                  textCapitalization: TextCapitalization.sentences,
+                  inputFormatters: [
+                    LengthLimitingTextInputFormatter(50),
+                  ],
                   decoration: textInputDecoration,
-                  onChanged: (val) => setState(() {
-                    _title = val;
-                  }),
+                  onChanged: (val) {
+                    getTitleCount(val);
+                  },
                 ),
                 SizedBox(
                   height: 20,
                 ),
                 Text(
-                  "Description",
-                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
-                ),
+                      "Description",
+                      style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
+                    ),
                 SizedBox(
                   height: 8,
                 ),
                 TextFormField(
+                  textCapitalization: TextCapitalization.sentences,
                   decoration: textInputDecoration,
-                  onChanged: (val) => setState(() {
-                    _description = val;
-                  }),
+                  maxLines: 5,
+                  minLines: 4,
+                  onChanged: (val) {
+                    setState(() {
+                      _description = val;
+                    });
+                  },
                 ),
                 SizedBox(
                   height: 20,

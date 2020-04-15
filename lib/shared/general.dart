@@ -176,6 +176,17 @@ Widget getShimmer() {
   );
 }
 
+Widget taskDivider() {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 0.0),
+    child: Divider(
+      color: Colors.grey.withAlpha(25),
+      height: 3,
+      thickness: 1,
+    ),
+  );
+}
+
 Widget headerTextVertical(String title, int total) {
   return Container(
     margin: EdgeInsets.only(top: 33.0, bottom: 2.0, left: 20, right: 20),
@@ -211,6 +222,45 @@ Widget headerTextVertical(String title, int total) {
   );
 }
 
+Widget scrollArrows(Color color, double size) {
+  return Padding(
+    padding: const EdgeInsets.only(right: 15.0, left: 15.0),
+    child: Row(
+      children: <Widget>[
+        Icon(
+          Icons.arrow_back_ios,
+          size: size,
+          color: color,
+        ),
+        Icon(
+          Icons.arrow_forward_ios,
+          size: size,
+          color: color,
+        ),
+      ],
+    ),
+  );
+}
+
+Widget headerTextNextTask(String title) {
+  return Container(
+    margin: EdgeInsets.only(top: 15.0, bottom: 20.0, left: 20, right: 20),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+            color: Colors.black,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
 Widget headerText(String title, int total) {
   return Container(
     margin: EdgeInsets.only(top: 14.0, bottom: 2.0, left: 20, right: 20),
@@ -220,11 +270,10 @@ Widget headerText(String title, int total) {
         Row(
           children: <Widget>[
             Text(
-              '$title:',
+              '$title:'.toUpperCase(),
               style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-                color: Colors.black,
+                fontSize: 17,
+                fontWeight: FontWeight.w400,
               ),
             ),
             SizedBox(
@@ -233,24 +282,10 @@ Widget headerText(String title, int total) {
             Text(
               '$total',
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 17,
                 fontWeight: FontWeight.w600,
-                color: cDarkPink2,
+                color: cBlack,
               ),
-            ),
-          ],
-        ),
-        Row(
-          children: <Widget>[
-            Icon(
-              Icons.arrow_back_ios,
-              size: 16.0,
-              color: cDarkPink3,
-            ),
-            Icon(
-              Icons.arrow_forward_ios,
-              size: 16.0,
-              color: cDarkPink3,
             ),
           ],
         ),

@@ -1,17 +1,19 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
+import 'dart:io';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:tasks/models/profile.dart';
 import 'package:tasks/models/task.dart';
+import 'package:tasks/models/user.dart';
 import 'package:tasks/screens/home/profile_form.dart';
 import 'package:tasks/screens/task/all_task_info.dart';
-import 'package:tasks/screens/task/completed_task_info.dart';
-import 'package:tasks/screens/task/current_task_tile.dart';
+import 'package:tasks/screens/task/current_task_info.dart';
 import 'package:tasks/screens/task/task_form.dart';
-import 'package:tasks/screens/task/upcoming_task_info.dart';
 import 'package:tasks/services/api.dart';
 import 'package:tasks/services/auth.dart';
 import 'package:tasks/services/database.dart';
@@ -26,6 +28,11 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> with TickerProviderStateMixin {
   final AuthService _auth = AuthService();
+
+  final FirebaseMessaging _fcm = FirebaseMessaging();
+
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   bool fetching = false;
   int x = 0;
@@ -72,6 +79,21 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     });
   }
 
+  setNotifications(String userId) {
+    // iOS
+    if (Platform.isIOS) {
+      _fcm.requestNotificationPermissions(
+          const IosNotificationSettings(sound: true, alert: true, badge: true));
+
+      _fcm.onIosSettingsRegistered.listen((IosNotificationSettings settings) {
+        print('IOS Settings Registered');
+        DatabaseService().saveDeviceToken(userId);
+      });
+    } else {
+      DatabaseService().saveDeviceToken(userId);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -86,10 +108,69 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         });
       });
     });
+
+    // Subscribe to notification
+    // _fcm.subscribeToTopic('tasks');
+    // Unsubscribe to notification
+    // _fcm.unsubscribeFromTopic('tasks');
+
+    var android = AndroidInitializationSettings('mipmap/ic_launcher');
+    var ios = IOSInitializationSettings();
+    var platfoorm = InitializationSettings(android, ios);
+    flutterLocalNotificationsPlugin.initialize(platfoorm);
+
+    _fcm.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print("onMessage: $message");
+
+        // showNotification(message);
+
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            content: ListTile(
+              title: Text(message['notification']['title']),
+              subtitle: Text(message['notification']['body']),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text("OK"),
+              )
+            ],
+          ),
+        );
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print("onResume: $message");
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print("onLaunch: $message");
+      },
+    );
+  }
+
+  // Show Notifucation
+  showNotification(Map<String, dynamic> message) async {
+    var android = AndroidNotificationDetails(
+      "channelId",
+      "channelName",
+      "channelDescription",
+    );
+    var iOS = IOSNotificationDetails();
+    var platform = NotificationDetails(android, iOS);
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      "This is the Title",
+      "The is just a drill body",
+      platform,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<User>(context);
+    setNotifications(user.uid);
     return StreamProvider<List<Profile>>.value(
       value: DatabaseService().profiles,
       child: Scaffold(
@@ -147,54 +228,22 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                 ],
               ),
               SizedBox(
-                height: 50.0,
+                height: 60.0,
               ),
-              // Next Task
-              headerTextNextTask("Your Current Task"),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 15),
-                child: StreamProvider<List<Task>>.value(
-                  value: DatabaseService().currentTask,
-                  child: CurrentTaskTile(),
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  headerTextNextTask("Ongoing Tasks".toUpperCase()),
+                  scrollArrows(cDarkPink3, 18.0),
+                ],
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: Divider(
-                  color: Colors.pink.withAlpha(25),
-                  height: 3,
-                  thickness: 1,
-                ),
-              ),
-              // Upcoming Tasks
               StreamProvider<List<Task>>.value(
-                value: DatabaseService().upcomingTasks,
-                child: UpcomingTaskInfo(),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: Divider(
-                  color: Colors.pink.withAlpha(25),
-                  height: 3,
-                  thickness: 1,
-                ),
-              ),
-              // Completed Tasks
-              StreamProvider<List<Task>>.value(
-                value: DatabaseService().completedTasks,
-                child: CompletedTaskInfo(),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: Divider(
-                  color: Colors.pink.withAlpha(25),
-                  height: 3,
-                  thickness: 1,
-                ),
+                value: DatabaseService().currentTask(user.uid),
+                child: CurrentTaskInfo(),
               ),
               // All Tasks
               StreamProvider<List<Task>>.value(
-                value: DatabaseService().userTaskData,
+                value: DatabaseService().userTaskData(user.uid),
                 child: AllTaskInfo(),
               ),
             ],
@@ -254,25 +303,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     );
   }
 
-  Widget headerTextNextTask(String title) {
-    return Container(
-      margin: EdgeInsets.only(top: 15.0, bottom: 20.0, left: 20, right: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-              color: Colors.black,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Container _backBgCover() {
     return Container(
       height: 155.0,
@@ -329,13 +359,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text(
-                        "Author:",
-                        style: TextStyle(color: Colors.black54),
-                      ),
-                      SizedBox(
-                        width: 8.0,
-                      ),
                       Text(
                         author,
                         style: TextStyle(color: cDarkPink3),
